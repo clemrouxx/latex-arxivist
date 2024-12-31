@@ -1,0 +1,113 @@
+\RequirePackage{multicol}
+\RequirePackage{sectsty}
+\RequirePackage{titlesec}
+\RequirePackage{etoolbox}
+
+% Set margins
+\RequirePackage[a4paper,top=19mm,left=17mm,right=17mm,bottom=23mm]{geometry}
+
+% Set font (for pdflatex)
+\RequirePackage{nimbusserif}
+
+% TWO COLUMNS
+% Two columns for the main content
+\newenvironment{maincontent}
+{
+    \begin{multicols}{2}
+}
+{
+    \end{multicols}
+}
+\setlength{\columnsep}{6mm}
+
+
+% TITLE FORMATTING
+% (order is important)
+\RequirePackage{titling}
+\RequirePackage{authblk}
+% Remove unwanted space above the title
+\setlength{\droptitle}{-40pt}
+
+% styling of authors
+\renewcommand{\Authfont}{}
+\renewcommand{\Affilfont}{\itshape\normalsize}
+
+% styling of title
+\pretitle{\begin{center}\large\bfseries}
+\posttitle{\end{center}}
+
+% Remove date (and its spacings)
+\date{}
+\predate{}
+\postdate{\vspace{-3em}}% Ungly way of removing unwanted space between title section and abstract
+
+% ABSTRACT 
+\renewenvironment{abstract}
+ {\vspace{1em}\small% Removing the word "Abstract"
+  \list{}{
+    \setlength{\leftmargin}{17mm}% Modifying margins
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  }
+ {\endlist}
+
+
+% SECTION TITLES
+
+\setcounter{secnumdepth}{0} % Remove title numbering
+
+\titleformat{\section}
+  {\normalfont\small\bfseries\centering}
+  {\thesection}{1em}
+  {\MakeUppercase}
+
+\titleformat{\subsection}
+  {\normalfont\bfseries\centering}
+  {\thesection}{1em}{}
+
+% FIGURES
+
+% Full-width figures
+\renewenvironment{figure}
+  {\begin{figure*}}
+  {\end{figure*}}
+
+% Figure caption
+\RequirePackage{caption}
+\captionsetup[figure]{labelsep=period,name=FIG.}
+
+% PARAGRAPHS
+\RequirePackage{indentfirst}
+
+% BIBLIOGRAPHY
+
+\RequirePackage[ 
+  backend=biber,
+  style=numeric-comp,
+  doi=false,
+  eprint=false,
+  url=false,
+  maxbibnames=99
+]{biblatex}
+
+% Begin the bibliography with a horizontal line
+\DeclarePrintbibliographyDefaults{title=\hrulefill}
+
+% Print the bibliography in two columns too
+\preto{\printbibliography}{\begin{multicols}{2}}
+\appto{\printbibliography}{\end{multicols}}
+
+
+% Details on reference styles
+\renewbibmacro{in:}{}
+\DeclareFieldFormat{journaltitle}{#1} % No italics
+\DeclareFieldFormat*{title}{#1,} % No quotation marks, and use a comma
+\DeclareFieldFormat[article, unpublished]{pages}{#1} % No more "pp."
+\DeclareFieldFormat[article]{volume}{\mkbibbold{#1}} % Put volume in bold
+
+\AtEveryBibitem{
+    \clearfield{number} % Remove article number
+    \clearfield{pages} % Remove pages
+}
+
+% Ideally I want the first page to be printed before the year, but it seems complicated. If I keep the title in the reference it should be more than enough to find the article anyway.
