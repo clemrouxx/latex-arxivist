@@ -8,7 +8,6 @@
 - Put all the main content of your article (everything after the abstract and before the bibliography) in the environment "maincontent" (with `\begin{maincontent}` and `\end{maincontent}`). Otherwise it won't be in two columns.
 - Compile ! (I have only tested this with pdflatex, it might not work with other compilers)
 
-# Development
+# Options
 
-Ideally, I would want the figures to be only on one column, as part of the two-column layout, but couldn't figure out how to do this. 
-Other minor adjustments and personalizations could also be done.
+The option `single-column-figures` will insert the figures in the text, spanning just one column. However, this is not perfect, as these figures will no longer be floating (they will be inserted where they are in the LaTeX file, which may not be optimal). You can activate this behaviour by writing `\usepackage[single-column-figures]{arxivist}`.
