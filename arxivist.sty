@@ -1,13 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{arxivist}[2025/01]
+
 \RequirePackage{multicol}
 \RequirePackage{sectsty}
 \RequirePackage{titlesec}
 \RequirePackage{etoolbox}
-
 % Set margins
 \RequirePackage[a4paper,top=19mm,left=17mm,right=17mm,bottom=23mm]{geometry}
-
 % Set font (for pdflatex)
 \RequirePackage{nimbusserif}
+\RequirePackage{indentfirst} % Adds first indent in paragraphs
+
+% Options for figure properties
+\newbool{single-column-figures}
+\setbool{single-column-figures}{false}
+
+\DeclareOption{single-column-figures}{\setbool{single-column-figures}{true}}
+\DeclareOption{two-column-figures}{\setbool{single-column-figures}{false}}
+\DeclareOption*{\PackageWarning{arxivist}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
 
 % TWO COLUMNS
 % Two columns for the main content
@@ -52,9 +63,9 @@
  {\endlist}
 
 
-% SECTION TITLES
+% SECTION HEADERS
 
-\setcounter{secnumdepth}{0} % Remove title numbering
+\setcounter{secnumdepth}{0} % Remove header numbering
 
 \titleformat{\section}
   {\normalfont\small\bfseries\centering}
@@ -66,18 +77,35 @@
   {\thesection}{1em}{}
 
 % FIGURES
+\ifbool{single-column-figures}{
+    % One-column "figures"
+    % I kind of recreate the figure manually. The main problem is that it is not floating.
+    % Also, for now, it is sensitive to the order (label has to be before caption), but this can be improved
+    \AtBeginEnvironment{figure}{
+      \pretocmd{\label}{\end{center}\vfill\refstepcounter{figure} FIG. \thefigure. }{}{}
+      \renewcommand{\caption}{#}% Kind of just removing the caption command, but printing the caption
+    }
+    \renewenvironment{figure}[1][]
+    {
+        \medskip\noindent
+        \begin{minipage}{\dimexpr0.5\textwidth-0.5\columnsep\relax} % Make a minipage
+        \begin{center} % Center the image
+    }
+    {
+        \end{minipage}
+        \medskip
+    }
+}
+{% Full-width figures
+    \renewenvironment{figure}
+    {\begin{figure*}}
+    {\end{figure*}}
+}
 
-% Full-width figures
-\renewenvironment{figure}
-  {\begin{figure*}}
-  {\end{figure*}}
-
-% Figure caption
+% Figure caption (for the full-width figures)
 \RequirePackage{caption}
-\captionsetup[figure]{labelsep=period,name=FIG.}
+\captionsetup[figure]{labelsep=period,name=FIG.
 
-% PARAGRAPHS
-\RequirePackage{indentfirst}
 
 % BIBLIOGRAPHY
 
